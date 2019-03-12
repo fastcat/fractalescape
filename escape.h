@@ -65,11 +65,11 @@ char *coeffstring(fractalparams_t *fractal, char *str);
 
 // runs the fractal equation against point and sets point to the next point
 // along the attractor
-inline void advance(point_t *pos, const fractalparams_t *fractal);
+static inline void advance(point_t *pos, const fractalparams_t *fractal);
 
 // returns a boolean indicating whether or not the point qualifies as having
 // escaped
-inline int escaped(const point_t *pos);
+static inline int escaped(const point_t *pos);
 
 // calculates the escape time for a point, given a fractal
 // returns -1 if the point never escaped

@@ -84,7 +84,7 @@ int gen_random_fractals(const fe_opts_t *opts) {
 			++j;
 		}
 
-		fprintf(stderr, "Best out of %d is %s (scored %.1f)\n", j, bestcoeffstr, bestscore);
+		fprintf(stderr, "Best out of %d is %s (scored %.1f, max %d)\n", j, bestcoeffstr, bestscore, bestmaxval);
 		
 		cfret = writefractal(opts, bestcoeffstr, maxval);
 		fprintf(stderr, "Done with fractal, retval = %d\n", cfret);

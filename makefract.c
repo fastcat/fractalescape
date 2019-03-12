@@ -6,7 +6,7 @@
 
 int writefractal(const fe_opts_t *opts, const char *coeffstr, int maxval) {
 	fractalparams_t fractal;
-	char ofname[PATH_MAX];
+	char ofname[PATH_MAX+5];
 	void *pngwriter;
 	int cfret;
 

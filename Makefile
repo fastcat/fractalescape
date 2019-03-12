@@ -6,7 +6,7 @@ DEPS=$(patsubst %.c,%.d,${SOURCES})
 CPPFLAGS=-D_GNU_SOURCE
 CFLAGS=-Wall -Werror -g -O3
 CC=gcc
-LIBS=$(shell libpng-config --ldflags)
+LIBS=$(shell libpng-config --ldflags) -lm
 INSTBASE=${HOME}
 
 all: ${TARGET}
