@@ -1,0 +1,17 @@
+Included with FractalEscape is a small perl script 'mkufm.pl'.  It takes as
+arguments one or more of the 12 character parameter strings.  To make things
+easy on you, it will ignore any junk after those 12 characters.  An example
+of the utility of this is below.  It will emit to stdout a file that can be
+loaded into Ultra Fractal 3 (don't know if it will work with 4, seems
+likely).  While it will be slower to generate them, Ultra Fractal provides
+many tools and tricks to create prettier images from the fractal
+definitions.
+
+Some examples:
+
+Generate a file with a couple definitions:
+  perl mkufm.pl zhRukuxOosEr znGFwxDyXAky AiOQByHRjcJh >myfractals.ufm
+
+Generate a definition file for a whole directory of fractals:
+  perl mkufm.pl *.png >manyfractals.ufm
+  

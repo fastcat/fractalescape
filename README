@@ -1,0 +1,75 @@
+FractalEscape is a simple, escape-time fractal generator.
+
+To compile it, just run make.  You will need libpng installed.
+
+Running it without options will print usage information.
+
+Some notes about the model it uses will help make sense of the options.
+
+For this program, each 'fractal' is a 12 parameter polynomial.  Those 12
+parameters are represented as a string of 12 characters, each of which
+encodes a number.  This string can be specified using the -f/--fractal
+option, or can be generated randomly (more on that below).
+
+The fractal is rendered by estimating escape times for points in a
+rectangular grid.  This grid is determined by the -s/--size and -c/--coords
+options, which specify the pixel size of the output and the real number
+coordinates of the rectangle.  FractalEscape will happily accept output
+dimensions of a different aspect ratio from the real coordinates.
+
+The output can be tweaked in two major ways.  First is a scaling option
+-m/--maxval.  This will rescale the range of escape time values to fit into
+a predefined range of output values.
+
+The other major tweak is oversampling (a.k.a. anti-aliasing).  Activating
+the -O/--osfact (that's a capital letter O) option will cause a grid of NxN
+values to be computed and averaged for each output pixel.  A value of 2 or 3
+vastly improves the visual quality of the output.  Larger values do not have
+much benefit.
+
+Output is saved as PNG images, by default named based on the 12 character
+string defining the fractal (so that you can easily regenerate a fractal
+with different tweak parameters later on).  If generating only a single
+fractal (i.e. using the -f/--fractal option), you can specify the filename
+with the -o/--output option.  If generating multiple fractals (random mode),
+that option will instead specify what directory to save all the images into.
+
+Random generation of fractals is activated with the -r/--random option. This
+can optionally take a number of fractals to generate.  If not specified, it
+will generate fractals until it receives an interrupt (Ctrl-C), at which
+time it will clean up and exit gracefully, trying hard not to leave broken,
+half written images in its wake.
+
+The process of generating random fractals goes like this:
+
+- While not enough images have yet been generated ...
+  - While not enough candidates for the next image have been analyzed ...
+    - Pick a random set of values for the 12 parameters
+    - Check the escape time at the 0,0 pixel
+    - If it doesn't look boring (doesn't escape too fast) ...
+      - Compute a thumbnail (1/10th width & height, no oversampling) version
+        of the fractal, passing it through a statistics collector.
+      - Compute an 'interestingness' score
+      - Save the parameters and score
+  - Generate at full resolution the best candidate we found
+
+Currently "enough" candidates is 100, "enough" images is determined by the
+--random option as described above.
+
+The 'interestingness' qualification at step 3 works off the rough
+observation that fractals that have too little or too much going on (all the
+same value, or white noise) are uninteresting.  The scoring for this works
+something like this:
+
+1) Mark the most common pixel values as likey background
+2) Figure out how many of the next most common pixel values it takes to
+   consume 2/3rds of the image.  Positively score values in what I
+   empircally determined to be a 'good' range, negatively score values
+   outside that.
+3) Weight the score based on the fraction of the image area that was marked
+   as likely background -- the greater the portion of the image that is
+   taken up by background, the more boring the image is.
+
+Cheers,
+	-- Matthew "Cheetah" Gabeler-Lee
+	   cheetah@fastcat.org
