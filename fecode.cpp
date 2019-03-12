@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
@@ -10,6 +10,8 @@
 
 #include "FECode.h"
 #include "platform.h"
+
+using namespace std;
 
 //globals for calculation
 double a[12];
@@ -65,7 +67,7 @@ void showterminate()
 	time_t Term = time(NULL);
 	int RunTime = time(NULL)-MainStart;
 	double spf = (double)RunTime / (double)FractalsGenerated;
-	sprintf(termstr, "%s Terminating On %sProgram ran for %ld seconds\nProgram generated %ld fractal(s)\nAverage Speed: %g spf\nDone.\n",
+	sprintf(termstr, "%s Terminating On %sProgram ran for %d seconds\nProgram generated %ld fractal(s)\nAverage Speed: %g spf\nDone.\n",
 	//ctime includes newline, thus none   ^Here
 		VTag, ctime(&Term), RunTime, FractalsGenerated, spf);
 	logstr(termstr);
@@ -124,7 +126,7 @@ void display()		//writes fractal to .bmp file
 	logstr("\n");
 	time_t start = time(NULL);
 	FILE *f;
-	char *WriteBuffer;
+	char *WriteBuffer = NULL;
 	const unsigned long WBLen = 65536;
 	if (!GenMatlab)
 		WriteBuffer = new char[WBLen];		//create a dynamic 64k buffer only if it's going to be used
@@ -222,9 +224,9 @@ const char *genfname(const double *a, int len, int useMAT)
 		strcpy(res, genbasename(a,len));
 		n = strlen(res);
 		if (useMAT)
-			strcpy(res+n,"MAT");
+			strcpy(res+n,"mat");
 		else
-			strcpy(res+n,"BMP");
+			strcpy(res+n,"bmp");
 	};
 	return res;
 };
@@ -302,8 +304,13 @@ void writedefaultcolormap(FILE *f)
 	double blendfact = 256/42.0;
 	for(n = 0; n < 252; n++)
 	{
+		// low items become black
+		if (n < 10) {
+			r = 255 * n / 10;
+			g = b = 0;
+		}
 		//generate rgb color from hue
-		if (n < 42)
+		else if (n < 42)
 		{
 			r = 255;
 			g = (int)(blendfact*n);
@@ -363,7 +370,7 @@ void writecolormapfromfile(FILE *f, FILE *colormapfile)
 	//because of the way color entries are used, we must reverse the order
 	//of the winfract colormap
 	//temporary storage for color entries
-	long maptmp[120];
+	long maptmp[256];
 	do
 	{
 		fgets(line, 256, colormapfile);
